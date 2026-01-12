@@ -9,4 +9,5 @@ export enum MutationKeys {
 
 	// Games
 	CREATE_GAME = "Create Game",
+	JOIN_GAME = "Join Game",
 }

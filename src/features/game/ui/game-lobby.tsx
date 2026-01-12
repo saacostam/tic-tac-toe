@@ -1,8 +1,13 @@
 import { Button, Card, Flex, Grid, Group, Text } from "@mantine/core";
+import { useCallback } from "react";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError, SuspenseLoader } from "@/shared/components";
 import { getErrorCopy } from "@/shared/errors/domain";
-import { useMutationCreateGame, useQueryGames } from "../app";
+import {
+	useMutationCreateGame,
+	useMutationJoinGame,
+	useQueryGames,
+} from "../app";
 
 export interface GameLobbyProps {
 	userId: string;
@@ -15,6 +20,7 @@ export function GameLobby({ userId }: GameLobbyProps) {
 	const games = gamesQuery.useQuery();
 
 	const createGame = useMutationCreateGame();
+	const joinGame = useMutationJoinGame();
 
 	const onClickCreateGame = () => {
 		createGame.mutate(
@@ -31,12 +37,38 @@ export function GameLobby({ userId }: GameLobbyProps) {
 				onSuccess: () => {
 					notificationAdapter.notify({
 						type: "success",
-						msg: "Game Created",
+						msg: "Game Created!",
 					});
 				},
 			},
 		);
 	};
+
+	const onClickJoinGame = useCallback(
+		(gameId: string) => {
+			joinGame.mutate(
+				{
+					gameId,
+					userId,
+				},
+				{
+					onError: (e) => {
+						notificationAdapter.notify({
+							type: "error",
+							msg: getErrorCopy(e, "We couldn't join the game"),
+						});
+					},
+					onSuccess: () => {
+						notificationAdapter.notify({
+							type: "success",
+							msg: "Game Joined!",
+						});
+					},
+				},
+			);
+		},
+		[joinGame.mutate, notificationAdapter.notify, userId],
+	);
 
 	return (
 		<Flex direction="column" gap="md">
@@ -68,15 +100,26 @@ export function GameLobby({ userId }: GameLobbyProps) {
 					</Card>
 				) : (
 					<Grid gutter="md">
-						{games.data.map((room) => (
-							<Grid.Col key={room.id} span={{ base: 12, md: 6 }}>
-								<Card withBorder w="full">
+						{games.data.map((game) => (
+							<Grid.Col key={game.id} span={{ base: 12, md: 6 }}>
+								<Card
+									component="button"
+									type="button"
+									withBorder
+									style={{
+										cursor: "pointer",
+										width: "100%",
+										textAlign: "left",
+									}}
+									onClick={() => onClickJoinGame(game.id)}
+									aria-label={`Join game ${game.id.slice(0, 10)}`}
+								>
 									<Group align="center" gap="xs">
 										<div
 											style={{
 												borderRadius: "50%",
 												backgroundColor:
-													room.userIds.length < 2
+													game.userIds.length < 2
 														? "var(--mantine-color-yellow-5)"
 														: "var(--mantine-color-success-5)",
 												height: "1rem",
@@ -84,11 +127,11 @@ export function GameLobby({ userId }: GameLobbyProps) {
 											}}
 										></div>
 										<Text fw="bold" size="lg">
-											{room.id.slice(0, 10)}
+											{game.id.slice(0, 10)}
 										</Text>
 									</Group>
 									<Text c="var(--mantine-color-dark-2)" size="sm">
-										{room.userIds.length}/2 Players
+										{game.userIds.length}/2 Players
 									</Text>
 								</Card>
 							</Grid.Col>
