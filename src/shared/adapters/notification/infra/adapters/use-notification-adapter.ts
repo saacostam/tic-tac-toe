@@ -15,7 +15,7 @@ export function useNotificationAdapter({
 			const msg = args.msg;
 			const type = args.type;
 
-			const title = (args.type ?? type === "error") ? "Error" : "Success";
+			const title = args.type === "error" ? "Error" : "Success";
 
 			showNotification({
 				id: uuidAdapter.gen(),
