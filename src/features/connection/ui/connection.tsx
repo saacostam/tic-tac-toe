@@ -118,14 +118,16 @@ export function Connection() {
 			<form onSubmit={form.handleSubmit(onSubmit)}>
 				<Box ta="center" mb="md">
 					<Text size="xl" fw="bold">
-						Connection
+						Choose a username
 					</Text>
-					<Text size="sm">Welcome to tic-tac-toe!</Text>
+					<Text size="sm">
+						Your username will be visible to other players 👀
+					</Text>
 				</Box>
 				<TextInput
 					size="sm"
 					label="Username"
-					placeholder="Username"
+					placeholder="Your username"
 					{...form.register("name")}
 					error={errors.name?.message}
 				/>
