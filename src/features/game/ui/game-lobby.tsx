@@ -1,16 +1,56 @@
-import { Card, Flex, Grid, Text } from "@mantine/core";
+import { Button, Card, Flex, Grid, Group, Text } from "@mantine/core";
+import { useAdapters } from "@/shared/adapters/core/app";
 import { EmptyQuery, QueryError, SuspenseLoader } from "@/shared/components";
-import { useQueryGames } from "../app";
+import { getErrorCopy } from "@/shared/errors/domain";
+import { useMutationCreateGame, useQueryGames } from "../app";
 
-export function GameLobby() {
+export interface GameLobbyProps {
+	userId: string;
+}
+
+export function GameLobby({ userId }: GameLobbyProps) {
+	const { notificationAdapter } = useAdapters();
+
 	const gamesQuery = useQueryGames();
 	const games = gamesQuery.useQuery();
 
+	const createGame = useMutationCreateGame();
+
+	const onClickCreateGame = () => {
+		createGame.mutate(
+			{
+				userId,
+			},
+			{
+				onError: (e) => {
+					notificationAdapter.notify({
+						type: "error",
+						msg: getErrorCopy(e, "We couldn't create the game"),
+					});
+				},
+				onSuccess: () => {
+					notificationAdapter.notify({
+						type: "success",
+						msg: "Game Created",
+					});
+				},
+			},
+		);
+	};
+
 	return (
 		<Flex direction="column" gap="md">
-			<Text fw="bold" size="xl">
-				🌐 Game Lobby
-			</Text>
+			<Group align="center" justify="space-between">
+				<Text fw="bold" size="xl">
+					🌐 Game Lobby
+				</Text>
+				<Button
+					onClick={onClickCreateGame}
+					loading={createGame.isPending || games.isLoading}
+				>
+					Create Game
+				</Button>
+			</Group>
 			{games.isError && (
 				<QueryError
 					msg="We couldn&apos;t load the available games"

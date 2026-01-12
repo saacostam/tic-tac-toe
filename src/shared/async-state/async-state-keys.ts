@@ -4,6 +4,9 @@ export enum QueryKeys {
 }
 
 export enum MutationKeys {
-	// CONNECTION
+	// Connection
 	JOIN = "Join",
+
+	// Games
+	CREATE_GAME = "Create Game",
 }

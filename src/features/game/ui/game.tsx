@@ -24,7 +24,10 @@ export function Game() {
 				retry={{ onClick: userGame.refetch, isPending: userGame.isLoading }}
 			/>
 		);
-	if (userGame.isSuccess) return userGame.data === null ? <GameLobby /> : null;
+	if (userGame.isSuccess && authAdapter.session.type === "authenticated")
+		return userGame.data === null ? (
+			<GameLobby userId={authAdapter.session.userId} />
+		) : null;
 
 	return <SuspenseLoader style={{ height: "32rem" }} />;
 }
