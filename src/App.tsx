@@ -27,7 +27,7 @@ function App() {
 							<Outlet />
 						</ClientsProvider>
 					</AdaptersProvider>
-					<ReactQueryDevtools />
+					<ReactQueryDevtools buttonPosition="bottom-left" />
 				</QueryClientProvider>
 				<Notifications />
 			</MantineProvider>
