@@ -36,7 +36,7 @@ export function AppLayout({ children }: PropsWithChildren) {
 		[navigationAdapter.generateRoute],
 	);
 
-	const onClickLogout = useCallback(
+	const onClickRename = useCallback(
 		() => authAdapter.removeToken(),
 		[authAdapter.removeToken],
 	);
@@ -71,7 +71,7 @@ export function AppLayout({ children }: PropsWithChildren) {
 									</UnstyledButton>
 								))}
 							</Group>
-							<Button onClick={onClickLogout}>Logout</Button>
+							<Button onClick={onClickRename}>Rename</Button>
 							<ThemeToggle />
 						</Flex>
 					</Group>
