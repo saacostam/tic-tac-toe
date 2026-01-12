@@ -58,29 +58,43 @@ export function GameLobby({ userId }: GameLobbyProps) {
 				/>
 			)}
 			{games.isLoading && <SuspenseLoader style={{ height: "8rem" }} />}
-			{games.isSuccess && (
-				<Card withBorder>
-					{games.data.length <= 0 ? (
+			{games.isSuccess &&
+				(games.data.length <= 0 ? (
+					<Card withBorder>
 						<EmptyQuery
 							title="No Rooms Available!"
 							description="Create a room or wait for one to appear"
 						/>
-					) : (
-						<Grid>
-							{games.data.map((room) => (
-								<Grid.Col key={room.id} span={{ base: 12, md: 6 }}>
-									<Card withBorder w="full">
+					</Card>
+				) : (
+					<Grid gutter="md">
+						{games.data.map((room) => (
+							<Grid.Col key={room.id} span={{ base: 12, md: 6 }}>
+								<Card withBorder w="full">
+									<Group align="center" gap="xs">
+										<div
+											style={{
+												borderRadius: "50%",
+												backgroundColor:
+													room.userIds.length < 2
+														? "var(--mantine-color-yellow-5)"
+														: "var(--mantine-color-success-5)",
+												height: "1rem",
+												width: "1rem",
+											}}
+										></div>
 										<Text fw="bold" size="lg">
 											{room.id.slice(0, 10)}
 										</Text>
-										<Text size="sm">{room.userIds.length}/2 Players</Text>
-									</Card>
-								</Grid.Col>
-							))}
-						</Grid>
-					)}
-				</Card>
-			)}
+									</Group>
+									<Text c="var(--mantine-color-dark-2)" size="sm">
+										{room.userIds.length}/2 Players
+									</Text>
+								</Card>
+							</Grid.Col>
+						))}
+					</Grid>
+				))}
 		</Flex>
 	);
 }
