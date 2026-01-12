@@ -1,9 +1,13 @@
+import { DomainError, DomainErrorType } from "@/shared/errors/domain";
 import type { IConnectionClient, IConnectionClientPayload } from "../domain";
 
 export class ConnectionClient implements IConnectionClient {
 	join(args: IConnectionClientPayload["JoinIn"]): Promise<void> {
 		return new Promise((res, rej) => {
 			const socket = new WebSocket(`ws://localhost:8000/ws/${args.name}`);
+
+			let settled = false;
+			let opened = false;
 
 			const cleanup = () => {
 				socket.removeEventListener("open", onOpen);
@@ -12,60 +16,78 @@ export class ConnectionClient implements IConnectionClient {
 				socket.removeEventListener("close", onClose);
 			};
 
-			const onOpen = (e: Event) => {
-				console.log("[ConnectionClient.join.onOpen]", e);
-			};
-
-			const onMessage = (event: MessageEvent) => {
-				const unparsedPayload = event.data;
-				if (typeof unparsedPayload !== "string") return;
-
-				try {
-					const payload: unknown = JSON.parse(unparsedPayload);
-
-					const event = getStringFieldFromUnknownPayload(payload, "event");
-					const message = getStringFieldFromUnknownPayload(payload, "message");
-
-					switch (event) {
-						case "USER_ID": {
-							if (message) args.onConnect(message);
-							break;
-						}
-						case "GAMES_CHANGED": {
-							args.onGamesChanged();
-							break;
-						}
-						case "USER_GAME_CHANGED": {
-							args.onUserGameChanged();
-							break;
-						}
-						case "USER_GAME_REMOVED": {
-							args.onUserGameRemoved();
-							break;
-						}
-					}
-				} catch (error) {
-					cleanup();
-					rej(error);
-				}
-			};
-
-			const onError = (err: Event) => {
+			const rejectOnce = (err: unknown) => {
+				if (settled) return;
+				settled = true;
 				cleanup();
 				rej(err);
 			};
 
-			const onClose = () => {
+			const resolveOnce = () => {
+				if (settled) return;
+				settled = true;
+				res();
+			};
+
+			const onOpen = () => {
+				opened = true;
+				resolveOnce();
+			};
+
+			const onError = (err: Event) => {
+				// May or may not fire — do not rely on this
+				rejectOnce(err);
+			};
+
+			const onClose = (event: CloseEvent) => {
 				cleanup();
+
+				if (!opened) {
+					rejectOnce(
+						new DomainError({
+							type: DomainErrorType.UNKNOWN,
+							msg: `[ConnectionClient.join.onClose] Closed connection without opening - code: ${event.code}`,
+							userMsg: "Couldn't connect to the server. Please try again.",
+						}),
+					);
+					return;
+				}
+
+				// Normal disconnect after a successful connection
 				args.onDisconnect();
+			};
+
+			const onMessage = (event: MessageEvent) => {
+				if (typeof event.data !== "string") return;
+
+				try {
+					const payload = JSON.parse(event.data);
+					const eventType = getStringFieldFromUnknownPayload(payload, "event");
+					const message = getStringFieldFromUnknownPayload(payload, "message");
+
+					switch (eventType) {
+						case "USER_ID":
+							if (message) args.onConnect(message);
+							break;
+						case "GAMES_CHANGED":
+							args.onGamesChanged();
+							break;
+						case "USER_GAME_CHANGED":
+							args.onUserGameChanged();
+							break;
+						case "USER_GAME_REMOVED":
+							args.onUserGameRemoved();
+							break;
+					}
+				} catch (err) {
+					rejectOnce(err);
+				}
 			};
 
 			socket.addEventListener("open", onOpen);
 			socket.addEventListener("message", onMessage);
 			socket.addEventListener("error", onError);
 			socket.addEventListener("close", onClose);
-
-			res();
 		});
 	}
 }

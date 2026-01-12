@@ -7,6 +7,7 @@ export interface IGameClient {
 	queryUserGame(
 		args: IGameClientPayload["QueryUserGameReq"],
 	): Promise<WithTurns<IGame> | null>;
+	sendTurn(args: IGameClientPayload["SendTurnReq"]): Promise<void>;
 }
 
 export interface IGameClientPayload {
@@ -19,5 +20,11 @@ export interface IGameClientPayload {
 	};
 	QueryUserGameReq: {
 		userId: string;
+	};
+	SendTurnReq: {
+		userId: string;
+		gameId: string;
+		x: number;
+		y: number;
 	};
 }

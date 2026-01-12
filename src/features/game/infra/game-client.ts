@@ -68,4 +68,18 @@ export class GameClient implements IGameClient {
 			})),
 		};
 	}
+
+	async sendTurn(args: IGameClientPayload["SendTurnReq"]): Promise<void> {
+		const url = new URL(
+			`/${args.userId}/games/${args.gameId}/turn`,
+			BASE_HTTP_URL,
+		);
+		await fetch(url.toString(), {
+			method: "POST",
+			body: JSON.stringify({
+				y: args.y,
+				x: args.x,
+			}),
+		});
+	}
 }

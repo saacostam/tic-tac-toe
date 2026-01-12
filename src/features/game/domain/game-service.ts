@@ -11,7 +11,13 @@ type IBoard = [
 class GameService {
 	canApplyTurn(game: WithTurns<IGame>, turn: ITurn): boolean {
 		const board = this.createBoardFromTurns(game.turns);
-		return board.at(turn.y)?.at(turn.x) === null;
+
+		const isCellEmpty = board.at(turn.y)?.at(turn.x) === null;
+
+		const lastTurnPlayerId = game.turns.at(-1)?.playerId ?? game.userIds[1]; // TODO: Move this as a payload from backend
+		const isMyTurn = lastTurnPlayerId !== turn.playerId;
+
+		return isCellEmpty && isMyTurn;
 	}
 
 	checkWinCondition(

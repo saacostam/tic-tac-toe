@@ -34,7 +34,11 @@ export function Game() {
 		) : userGame.data.userIds.length < TOTAL_PLAYERS ? (
 			<WaitingForPlayer game={userGame.data} />
 		) : (
-			<GameBoard game={userGame.data} userId={authAdapter.session.userId} />
+			<GameBoard
+				game={userGame.data}
+				optimSetter={userGameQuery.setOptimisticData}
+				userId={authAdapter.session.userId}
+			/>
 		);
 
 	return <SuspenseLoader style={{ height: "32rem" }} />;
