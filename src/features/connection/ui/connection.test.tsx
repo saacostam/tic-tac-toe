@@ -90,7 +90,7 @@ describe("Connection [Integration]", () => {
 			});
 
 			const username = screen.getByRole("textbox", { name: "Username" });
-			await userEvent.type(username, "A".repeat(4));
+			await userEvent.type(username, "A".repeat(1));
 
 			join.mockRejectedValue(
 				new DomainError({
