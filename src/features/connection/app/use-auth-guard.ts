@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
+import { PUBLIC_ROUTES } from "@/shared/adapters/auth/domain";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
-import { PUBLIC_ROUTES } from "../../domain";
 
 export function useAuthGuard() {
 	const { authAdapter, routerAdapter, navigationAdapter } = useAdapters();

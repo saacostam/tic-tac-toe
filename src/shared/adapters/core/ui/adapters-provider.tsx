@@ -2,7 +2,6 @@ import { type PropsWithChildren, useMemo } from "react";
 import { HashRouter } from "react-router";
 import { useMockAnalyticsProvider } from "@/shared/adapters/analytics/infra";
 import { useAuthAdapter } from "@/shared/adapters/auth/infra";
-import { AuthProvider } from "@/shared/adapters/auth/ui";
 import { useMockErrorMonitoringAdapter } from "@/shared/adapters/error-monitoring/infra";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { NavigationProvider } from "@/shared/adapters/navigation/ui";
@@ -28,9 +27,7 @@ export function AdaptersProvider({ children }: PropsWithChildren) {
 	return (
 		<AdaptersProviderWrapper>
 			<AdaptersProviderDependencyInjection>
-				<NavigationProvider>
-					<AuthProvider>{children}</AuthProvider>
-				</NavigationProvider>
+				<NavigationProvider>{children}</NavigationProvider>
 			</AdaptersProviderDependencyInjection>
 		</AdaptersProviderWrapper>
 	);

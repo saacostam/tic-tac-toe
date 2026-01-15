@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from "react";
 import { SuspenseLoader } from "@/shared/components";
-import { useAuthGuard } from "../../app";
+import { useAuthGuard } from "../app";
 
 export function AuthGuard({ children }: PropsWithChildren) {
 	const status = useAuthGuard();

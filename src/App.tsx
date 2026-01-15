@@ -3,6 +3,7 @@ import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Outlet } from "react-router";
+import { AuthGuard } from "@/features/connection/ui";
 import { AdaptersProvider } from "@/shared/adapters/core/ui";
 import { ClientsProvider } from "@/shared/clients/ui";
 import { MainErrorBoundary } from "@/shared/errors/ui";
@@ -24,7 +25,9 @@ function App() {
 				<QueryClientProvider client={queryClient}>
 					<AdaptersProvider>
 						<ClientsProvider>
-							<Outlet />
+							<AuthGuard>
+								<Outlet />
+							</AuthGuard>
 						</ClientsProvider>
 					</AdaptersProvider>
 					<ReactQueryDevtools buttonPosition="bottom-left" />
