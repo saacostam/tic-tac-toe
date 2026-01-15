@@ -2,7 +2,6 @@
  * Defines the valid keys that can be used with the persistence adapter.
  */
 export enum IPersistenceAdapterKey {
-	THEME = "theme",
 	TOKEN = "token",
 }
 

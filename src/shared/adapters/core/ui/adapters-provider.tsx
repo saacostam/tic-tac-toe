@@ -47,19 +47,17 @@ const navigationAdapter = new NavigationAdapter();
  * @returns {JSX.Element} A context provider that wraps the children with injected adapters.
  */
 function AdaptersProviderDependencyInjection({ children }: PropsWithChildren) {
-	const persistenceAdapter = useLocalStoragePersistenceAdapter();
 	const uuidAdapter = useUuidAdapter();
 
 	const analyticsAdapter = useMockAnalyticsProvider();
-	const sessionAdapter = useSessionAdapter();
 	const errorMonitoringAdapter = useMockErrorMonitoringAdapter();
 	const notificationAdapter = useNotificationAdapter({
 		uuidAdapter,
 	});
+	const persistenceAdapter = useLocalStoragePersistenceAdapter();
 	const routerAdapter = useReactRouterAdapter();
-	const themeAdapter = useThemeAdapterImpl({
-		persistenceAdapter,
-	});
+	const sessionAdapter = useSessionAdapter();
+	const themeAdapter = useThemeAdapterImpl();
 
 	const adapters: IAdapters = useMemo(
 		() => ({
