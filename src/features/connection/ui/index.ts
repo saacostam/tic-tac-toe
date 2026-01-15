@@ -1,2 +1,2 @@
-export * from "./auth-guard";
 export * from "./connection";
+export * from "./connection-guard";
