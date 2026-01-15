@@ -3,7 +3,7 @@ import type { ISession } from "@/shared/adapters/auth/domain";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { NavigationAdapter } from "@/shared/adapters/navigation/infra";
 import { renderWithProviders } from "@/tests";
-import { AuthGuard } from "../ui";
+import { ConnectionGuard } from "../ui";
 
 const navigationAdapter = new NavigationAdapter();
 
@@ -41,9 +41,9 @@ describe("AuthGuard [Integration]", () => {
 		});
 
 		renderWithProviders(
-			<AuthGuard>
+			<ConnectionGuard>
 				<div data-testid="content" />
-			</AuthGuard>,
+			</ConnectionGuard>,
 			{ adapters },
 		);
 
@@ -61,9 +61,9 @@ describe("AuthGuard [Integration]", () => {
 		});
 
 		renderWithProviders(
-			<AuthGuard>
+			<ConnectionGuard>
 				<div data-testid="content" />
-			</AuthGuard>,
+			</ConnectionGuard>,
 			{ adapters },
 		);
 
@@ -81,9 +81,9 @@ describe("AuthGuard [Integration]", () => {
 		});
 
 		renderWithProviders(
-			<AuthGuard>
+			<ConnectionGuard>
 				<div data-testid="content" />
-			</AuthGuard>,
+			</ConnectionGuard>,
 			{ adapters },
 		);
 
@@ -108,9 +108,9 @@ describe("AuthGuard [Integration]", () => {
 		});
 
 		renderWithProviders(
-			<AuthGuard>
+			<ConnectionGuard>
 				<div data-testid="content" />
-			</AuthGuard>,
+			</ConnectionGuard>,
 			{ adapters },
 		);
 
