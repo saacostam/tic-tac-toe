@@ -1,20 +1,11 @@
-import {
-	AspectRatio,
-	Card,
-	Container,
-	Flex,
-	Grid,
-	Group,
-	Text,
-	ThemeIcon,
-} from "@mantine/core";
+import { Box, Container, Grid, Group, Space, Text } from "@mantine/core";
 import { useMemo } from "react";
 import { useAdapters } from "@/shared/adapters/core/app";
 import type { OptimDataSetter } from "@/shared/async-state";
 import { getErrorCopy } from "@/shared/errors/domain";
-import { CircleIcon, XIcon } from "@/shared/icons";
-import { useMutationSendTurn } from "../app";
-import { gameService, type IGame, type WithTurns } from "../domain";
+import { useMutationSendTurn } from "../../app";
+import { gameService, type IGame, type WithTurns } from "../../domain";
+import { GameBoardCell } from "./game-board-cell";
 
 export interface GameBoardProps {
 	game: WithTurns<IGame>;
@@ -65,16 +56,17 @@ export function GameBoard({ game, optimSetter, userId }: GameBoardProps) {
 	};
 
 	return (
-		<Flex direction="column" gap="md">
+		<Box>
 			<Group align="center" justify="space-between">
 				<Text fw="bold" size="xl">
 					🎮 Game: {game.id.slice(0, 10)}
 				</Text>
 			</Group>
+			<Space my="md" />
 			<Container size="sm">
 				<Grid>
-					{board.map((row, y) => {
-						return row.map((cell, x) => {
+					{board.map((row, y) =>
+						row.map((cell, x) => {
 							const isValidMove = gameService.canApplyTurn(game, {
 								playerId: userId,
 								y,
@@ -83,44 +75,20 @@ export function GameBoard({ game, optimSetter, userId }: GameBoardProps) {
 
 							return (
 								<Grid.Col key={`${y}-${+x}`} span={{ base: 4 }}>
-									<AspectRatio ratio={1}>
-										<Card
-											component="button"
-											disabled={sendTurn.isPending || !isValidMove}
-											style={{
-												borderColor: isValidMove
-													? "var(--mantine-color-green-5)"
-													: "",
-												cursor: isValidMove ? "pointer" : "",
-											}}
-											onClick={() => onClickCell(x, y)}
-											withBorder
-										>
-											<Flex
-												align="center"
-												justify="center"
-												style={{
-													height: "100%",
-													width: "100%",
-												}}
-											>
-												{cell !== null ? (
-													<ThemeIcon
-														size="xl"
-														color={cell === userId ? "blue" : "red"}
-													>
-														{cell === userId ? <XIcon /> : <CircleIcon />}
-													</ThemeIcon>
-												) : null}
-											</Flex>
-										</Card>
-									</AspectRatio>
+									<GameBoardCell
+										disabled={sendTurn.isPending || !isValidMove}
+										isValidMove={isValidMove}
+										onClickCell={() => onClickCell(x, y)}
+										value={
+											cell === null ? "empty" : cell === userId ? "p1" : "p2"
+										}
+									/>
 								</Grid.Col>
 							);
-						});
-					})}
+						}),
+					)}
 				</Grid>
 			</Container>
-		</Flex>
+		</Box>
 	);
 }
