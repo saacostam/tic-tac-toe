@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
-import { PUBLIC_ROUTES } from "@/shared/adapters/session/domain";
+import { PUBLIC_ROUTES } from "../domain";
 
 export function useConnectionGuard() {
 	const { sessionAdapter, routerAdapter, navigationAdapter } = useAdapters();
