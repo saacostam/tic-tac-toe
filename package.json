@@ -10,9 +10,10 @@
     "format": "bunx biome format --write ./src",
     "check": "bunx biome check --write ./src",
     "test": "bunx vitest",
+    "test:dry": "bunx vitest run",
     "preview": "vite preview",
     "prepare": "husky",
-    "pre-commit": "bun check && bun run build && bun run test"
+    "pre-commit": "bun check && bun run build && bun run test:dry"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
