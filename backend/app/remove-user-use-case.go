@@ -4,7 +4,7 @@ import (
 	"myapp/domain"
 )
 
-type removeUserUseCase struct {
+type RemoveUserUseCase struct {
 	eventAdapter domain.EventAdapter
 	gameRepo     domain.GameRepo
 	userRepo     domain.UserRepo
@@ -14,15 +14,15 @@ func NewRemoveUserUseCase(
 	eventAdapter domain.EventAdapter,
 	gameRepo domain.GameRepo,
 	userRepo domain.UserRepo,
-) *removeUserUseCase {
-	return &removeUserUseCase{
+) *RemoveUserUseCase {
+	return &RemoveUserUseCase{
 		eventAdapter: eventAdapter,
 		gameRepo:     gameRepo,
 		userRepo:     userRepo,
 	}
 }
 
-func (uc *removeUserUseCase) Execute(id string) (string, error) {
+func (uc *RemoveUserUseCase) Execute(id string) (string, error) {
 	user, err := uc.userRepo.GetUserById(id)
 
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"myapp/domain"
 )
 
-type addUserUseCase struct {
+type AddUserUseCase struct {
 	eventAdapter domain.EventAdapter
 	userRepo     domain.UserRepo
 }
@@ -12,14 +12,14 @@ type addUserUseCase struct {
 func NewAddUserUseCase(
 	eventAdapter domain.EventAdapter,
 	userRepo domain.UserRepo,
-) *addUserUseCase {
-	return &addUserUseCase{
+) *AddUserUseCase {
+	return &AddUserUseCase{
 		eventAdapter: eventAdapter,
 		userRepo:     userRepo,
 	}
 }
 
-func (uc *addUserUseCase) Execute(name string) (string, error) {
+func (uc *AddUserUseCase) Execute(name string) (string, error) {
 	createdUser, createErr := uc.userRepo.CreateUser(name)
 
 	return createdUser.ID, createErr

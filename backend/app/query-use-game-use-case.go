@@ -4,19 +4,19 @@ import (
 	"myapp/domain"
 )
 
-type queryUserGameUseCase struct {
+type QueryUserGameUseCase struct {
 	gameRepo domain.GameRepo
 }
 
 func NewQueryUserGameUseCase(
 	gameRepo domain.GameRepo,
-) *queryUserGameUseCase {
-	return &queryUserGameUseCase{
+) *QueryUserGameUseCase {
+	return &QueryUserGameUseCase{
 		gameRepo: gameRepo,
 	}
 }
 
-func (uc *queryUserGameUseCase) Execute(userId string) (*domain.Game, error) {
+func (uc *QueryUserGameUseCase) Execute(userId string) (*domain.Game, error) {
 	games, err := uc.gameRepo.GetGamesByUserId(userId)
 	if err != nil {
 		return nil, err

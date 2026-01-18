@@ -4,18 +4,18 @@ import (
 	"myapp/domain"
 )
 
-type queryAvailableGameUseCase struct {
+type QueryAvailableGameUseCase struct {
 	gameRepo domain.GameRepo
 }
 
 func NewQueryAvailableGameUseCase(
 	gameRepo domain.GameRepo,
-) *queryAvailableGameUseCase {
-	return &queryAvailableGameUseCase{
+) *QueryAvailableGameUseCase {
+	return &QueryAvailableGameUseCase{
 		gameRepo: gameRepo,
 	}
 }
 
-func (uc *queryAvailableGameUseCase) Execute() ([]domain.Game, error) {
+func (uc *QueryAvailableGameUseCase) Execute() ([]domain.Game, error) {
 	return uc.gameRepo.GetOpenGames()
 }

@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-type startGameUseCase struct {
+type StartGameUseCase struct {
 	eventAdapter domain.EventAdapter
 	gameRepo     domain.GameRepo
 	userRepo     domain.UserRepo
@@ -16,15 +16,15 @@ func NewStartGameUseCase(
 	eventAdapter domain.EventAdapter,
 	gameRepo domain.GameRepo,
 	userRepo domain.UserRepo,
-) *startGameUseCase {
-	return &startGameUseCase{
+) *StartGameUseCase {
+	return &StartGameUseCase{
 		eventAdapter: eventAdapter,
 		gameRepo:     gameRepo,
 		userRepo:     userRepo,
 	}
 }
 
-func (uc *startGameUseCase) Execute(userId string) error {
+func (uc *StartGameUseCase) Execute(userId string) error {
 	log.Println("[StartGameUseCase] start")
 
 	user, userErr := uc.userRepo.GetUserById(userId)

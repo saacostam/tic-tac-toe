@@ -4,7 +4,7 @@ import (
 	"myapp/domain"
 )
 
-type endGameUseCase struct {
+type EndGameUseCase struct {
 	eventAdapter domain.EventAdapter
 	gameRepo     domain.GameRepo
 	userRepo     domain.UserRepo
@@ -14,15 +14,15 @@ func NewEndGameUseCase(
 	eventAdapter domain.EventAdapter,
 	gameRepo domain.GameRepo,
 	userRepo domain.UserRepo,
-) *endGameUseCase {
-	return &endGameUseCase{
+) *EndGameUseCase {
+	return &EndGameUseCase{
 		eventAdapter: eventAdapter,
 		gameRepo:     gameRepo,
 		userRepo:     userRepo,
 	}
 }
 
-func (uc *endGameUseCase) Execute(
+func (uc *EndGameUseCase) Execute(
 	gameId string,
 	userId string,
 ) error {

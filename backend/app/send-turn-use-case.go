@@ -4,7 +4,7 @@ import (
 	"myapp/domain"
 )
 
-type sendTurnUseCase struct {
+type SendTurnUseCase struct {
 	eventAdapter domain.EventAdapter
 	gameRepo     domain.GameRepo
 }
@@ -12,14 +12,14 @@ type sendTurnUseCase struct {
 func NewSendTurnUseCase(
 	eventAdapter domain.EventAdapter,
 	gameRepo domain.GameRepo,
-) *sendTurnUseCase {
-	return &sendTurnUseCase{
+) *SendTurnUseCase {
+	return &SendTurnUseCase{
 		eventAdapter: eventAdapter,
 		gameRepo:     gameRepo,
 	}
 }
 
-func (uc *sendTurnUseCase) Execute(
+func (uc *SendTurnUseCase) Execute(
 	gameId string,
 	userId string,
 	x int,

@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-type joinGameUseCase struct {
+type JoinGameUseCase struct {
 	eventAdapter domain.EventAdapter
 	gameRepo     domain.GameRepo
 	userRepo     domain.UserRepo
@@ -15,15 +15,15 @@ func NewJoinGameUseCase(
 	eventAdapter domain.EventAdapter,
 	gameRepo domain.GameRepo,
 	userRepo domain.UserRepo,
-) *joinGameUseCase {
-	return &joinGameUseCase{
+) *JoinGameUseCase {
+	return &JoinGameUseCase{
 		eventAdapter: eventAdapter,
 		gameRepo:     gameRepo,
 		userRepo:     userRepo,
 	}
 }
 
-func (uc *joinGameUseCase) Execute(userId string, gameId string) error {
+func (uc *JoinGameUseCase) Execute(userId string, gameId string) error {
 	user, err := uc.userRepo.GetUserById(userId)
 
 	if err != nil {

@@ -4,19 +4,19 @@ import (
 	"myapp/domain"
 )
 
-type getUserUseCase struct {
+type GetUserUseCase struct {
 	userRepo domain.UserRepo
 }
 
 func NewGetUserUseCase(
 	userRepo domain.UserRepo,
-) *getUserUseCase {
-	return &getUserUseCase{
+) *GetUserUseCase {
+	return &GetUserUseCase{
 		userRepo: userRepo,
 	}
 }
 
-func (uc *getUserUseCase) Execute(id string) (*domain.User, error) {
+func (uc *GetUserUseCase) Execute(id string) (*domain.User, error) {
 	user, err := uc.userRepo.GetUserById(id)
 
 	if err != nil {
