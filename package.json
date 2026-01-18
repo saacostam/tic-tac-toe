@@ -16,7 +16,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky",
-    "dev": "sh ./scripts/dev.sh"
+    "dev": "sh ./scripts/dev.sh",
+    "pre-commit": "sh ./scripts/pre-commit.sh"
   },
   "type": "commonjs",
   "devDependencies": {
