@@ -8,9 +8,3 @@ type GameRepo interface {
 	UpdateGameById(gameId string, game Game) error
 	RemoveGame(gameId string) error
 }
-
-type UserRepo interface {
-	CreateUser(name string) (User, error)
-	GetUserById(id string) (*User, error)
-	RemoveUser(id string) error
-}

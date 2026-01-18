@@ -14,14 +14,3 @@ type Game struct {
 	Status         GameStatus
 	WinnerPlayerId *string
 }
-
-type Turn struct {
-	PlayerId string
-	X        int
-	Y        int
-}
-
-type User struct {
-	ID   string
-	Name string
-}
