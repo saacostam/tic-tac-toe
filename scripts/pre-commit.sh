@@ -8,3 +8,7 @@ cd frontend
 bun check
 bun run build
 bun run test:dry
+
+cd ../backend
+
+go test ./... -v
