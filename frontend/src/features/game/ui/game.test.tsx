@@ -1,6 +1,5 @@
 import { screen, waitFor, within } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
-import type { INotificationAdapterPayload } from "@/shared/adapters/notification/domain";
 import { DomainError, DomainErrorType } from "@/shared/errors/domain";
 import { renderWithProviders } from "@/tests";
 import type { IGame, IGameClientPayload } from "../domain";
@@ -216,166 +215,175 @@ describe("Game [Integration]", () => {
 				);
 			});
 
-			it("renders games if more than 0", async () => {
-				const {
-					deps,
-					createGame,
-					joinGame,
-					queryUserGame,
-					queryGames,
-					notify,
-				} = createDeps({
-					auth: true,
-				});
+			describe("Game lobby — when games exist", () => {
+				const renderGameWithGames = async () => {
+					const {
+						deps,
+						createGame,
+						joinGame,
+						queryUserGame,
+						queryGames,
+						notify,
+					} = createDeps({ auth: true });
 
-				const games: IGame[] = [
-					mockGame({
-						id: "game-id-1",
-						userIds: [],
-					}),
-					mockGame({
-						id: "game-id-2",
-						userIds: ["test-id"],
-					}),
-				];
+					const games: IGame[] = [
+						mockGame({ id: "game-id-1", userIds: [] }),
+						mockGame({ id: "game-id-2", userIds: ["test-id"] }),
+					];
 
-				queryUserGame.mockResolvedValue(null);
-				queryGames.mockResolvedValue(games);
+					queryUserGame.mockResolvedValue(null);
+					queryGames.mockResolvedValue(games);
 
-				renderWithProviders(<Game />, deps);
+					renderWithProviders(<Game />, deps);
 
-				await waitFor(() => {
-					expect(screen.getByTestId("game-lobby")).toBeDefined();
-					expect(screen.getByTestId("game-lobby-content")).toBeDefined();
-					expect(screen.queryByTestId("suspense-loader")).toBeNull();
-					expect(screen.queryByTestId("query-error")).toBeNull();
+					await waitFor(() => {
+						expect(screen.getByTestId("game-lobby")).toBeDefined();
+						expect(screen.getByTestId("game-lobby-content")).toBeDefined();
+					});
 
-					expect(screen.queryByTestId("empty-query")).toBeNull();
-					expect(
-						screen.getAllByTestId("game-lobby-room-item").length,
-					).toBeGreaterThan(0);
-				});
-
-				// Elements
-				const roomElements = screen.getAllByTestId("game-lobby-room-item");
-				expect(roomElements.length).toBe(2);
-				roomElements.forEach((el) => {
-					expect(el).toBeInstanceOf(HTMLButtonElement);
-					expect(el).not.toBeDisabled();
-				});
-
-				const firstRoom = roomElements[0];
-				expect(within(firstRoom).getByText("0/2 Players")).toBeDefined();
-				expect(within(firstRoom).getByText("game-id-1")).toBeDefined();
-
-				const secondRoom = roomElements[1];
-				expect(within(secondRoom).getByText("1/2 Players")).toBeDefined();
-				expect(within(secondRoom).getByText("game-id-2")).toBeDefined();
-
-				// Join Room First Room - Error
-				const expectedJoinRoomPayload: IGameClientPayload["JoinGameReq"] = {
-					gameId: "game-id-1",
-					userId: "test-userId",
+					return {
+						createGame,
+						joinGame,
+						queryUserGame,
+						notify,
+					};
 				};
 
-				queryUserGame.mockReset();
-				queryUserGame.mockResolvedValue(null);
-				joinGame.mockRejectedValueOnce(mockError);
+				describe("rendering", () => {
+					it("renders the lobby and game rooms", async () => {
+						await renderGameWithGames();
 
-				await userEvent.click(firstRoom);
-				expect(joinGame).toHaveBeenCalledExactlyOnceWith(
-					expectedJoinRoomPayload,
-				);
-				await waitFor(() => {
-					expect(queryUserGame).toHaveBeenCalledOnce();
+						expect(screen.queryByTestId("suspense-loader")).toBeNull();
+						expect(screen.queryByTestId("query-error")).toBeNull();
+						expect(screen.queryByTestId("empty-query")).toBeNull();
 
-					const expectedNotficationPayload: INotificationAdapterPayload["NotifyIn"] =
-						{
-							type: "error",
-							msg: mockError.userMsg,
-						};
-					expect(notify).toHaveBeenCalledExactlyOnceWith(
-						expectedNotficationPayload,
-					);
+						const rooms = screen.getAllByTestId("game-lobby-room-item");
+						expect(rooms).toHaveLength(2);
+
+						rooms.forEach((room) => {
+							expect(room).toBeInstanceOf(HTMLButtonElement);
+							expect(room).not.toBeDisabled();
+						});
+					});
+
+					it("shows correct room metadata", async () => {
+						await renderGameWithGames();
+
+						const rooms = screen.getAllByTestId("game-lobby-room-item");
+
+						expect(within(rooms[0]).getByText("0/2 Players")).toBeDefined();
+						expect(within(rooms[0]).getByText("game-id-1")).toBeDefined();
+
+						expect(within(rooms[1]).getByText("1/2 Players")).toBeDefined();
+						expect(within(rooms[1]).getByText("game-id-2")).toBeDefined();
+					});
 				});
 
-				// Join Room First Room - Success
-				queryUserGame.mockReset();
-				queryUserGame.mockResolvedValue(null);
-				joinGame.mockReset();
-				notify.mockReset();
+				describe("joining a game", () => {
+					const joinPayload: IGameClientPayload["JoinGameReq"] = {
+						gameId: "game-id-1",
+						userId: "test-userId",
+					};
 
-				await userEvent.click(firstRoom);
-				expect(joinGame).toHaveBeenCalledExactlyOnceWith(
-					expectedJoinRoomPayload,
-				);
-				await waitFor(() => {
-					expect(queryUserGame).toHaveBeenCalledOnce();
+					it("shows an error notification when join fails", async () => {
+						const { joinGame, queryUserGame, notify } =
+							await renderGameWithGames();
 
-					const expectedNotficationPayload: INotificationAdapterPayload["NotifyIn"] =
-						{
-							type: "success",
-							msg: "Game Joined!",
-						};
-					expect(notify).toHaveBeenCalledExactlyOnceWith(
-						expectedNotficationPayload,
-					);
+						joinGame.mockRejectedValueOnce(mockError);
+
+						const firstRoom = screen.getAllByTestId("game-lobby-room-item")[0];
+
+						await userEvent.click(firstRoom);
+
+						expect(joinGame).toHaveBeenCalledExactlyOnceWith(joinPayload);
+
+						await waitFor(() => {
+							expect(queryUserGame).toHaveBeenCalledTimes(2);
+							expect(notify).toHaveBeenCalledExactlyOnceWith({
+								type: "error",
+								msg: mockError.userMsg,
+							});
+						});
+					});
+
+					it("shows a success notification when join succeeds", async () => {
+						const { joinGame, queryUserGame, notify } =
+							await renderGameWithGames();
+
+						const firstRoom = screen.getAllByTestId("game-lobby-room-item")[0];
+
+						await userEvent.click(firstRoom);
+
+						expect(joinGame).toHaveBeenCalledExactlyOnceWith(joinPayload);
+
+						await waitFor(() => {
+							expect(queryUserGame).toHaveBeenCalledTimes(2);
+							expect(notify).toHaveBeenCalledExactlyOnceWith({
+								type: "success",
+								msg: "Game Joined!",
+							});
+						});
+					});
 				});
 
-				// Allow create button click -
-				const createGameButton = screen.getByRole("button", {
-					name: "Create Game",
-				});
-				expect(createGameButton).not.toBeDisabled();
+				describe("creating a game", () => {
+					const createPayload: IGameClientPayload["CreateGameReq"] = {
+						userId: "test-userId",
+					};
 
-				const expectedCreateGamePayload: IGameClientPayload["CreateGameReq"] = {
-					userId: "test-userId",
-				};
+					it("enables the create game button", async () => {
+						await renderGameWithGames();
 
-				// Create - Error
-				queryUserGame.mockReset();
-				queryUserGame.mockResolvedValue(null);
-				createGame.mockRejectedValueOnce(mockError);
-				notify.mockReset();
+						const createGameButton = screen.getByRole("button", {
+							name: "Create Game",
+						});
 
-				await userEvent.click(createGameButton);
-				expect(createGame).toHaveBeenCalledExactlyOnceWith(
-					expectedCreateGamePayload,
-				);
-				await waitFor(() => {
-					expect(queryUserGame).toHaveBeenCalledOnce();
+						expect(createGameButton).not.toBeDisabled();
+					});
 
-					const expectedNotficationPayload: INotificationAdapterPayload["NotifyIn"] =
-						{
-							type: "error",
-							msg: mockError.userMsg,
-						};
-					expect(notify).toHaveBeenCalledExactlyOnceWith(
-						expectedNotficationPayload,
-					);
-				});
+					it("shows an error notification when create fails", async () => {
+						const { createGame, queryUserGame, notify } =
+							await renderGameWithGames();
 
-				// Create - Success
-				queryUserGame.mockReset();
-				queryUserGame.mockResolvedValue(null);
-				createGame.mockReset();
-				notify.mockReset();
+						createGame.mockRejectedValueOnce(mockError);
 
-				await userEvent.click(createGameButton);
-				expect(createGame).toHaveBeenCalledExactlyOnceWith(
-					expectedCreateGamePayload,
-				);
-				await waitFor(() => {
-					expect(queryUserGame).toHaveBeenCalledOnce();
+						const createGameButton = screen.getByRole("button", {
+							name: "Create Game",
+						});
 
-					const expectedNotficationPayload: INotificationAdapterPayload["NotifyIn"] =
-						{
-							type: "success",
-							msg: "Game Created!",
-						};
-					expect(notify).toHaveBeenCalledExactlyOnceWith(
-						expectedNotficationPayload,
-					);
+						await userEvent.click(createGameButton);
+
+						expect(createGame).toHaveBeenCalledExactlyOnceWith(createPayload);
+
+						await waitFor(() => {
+							expect(queryUserGame).toHaveBeenCalledTimes(2);
+							expect(notify).toHaveBeenCalledExactlyOnceWith({
+								type: "error",
+								msg: mockError.userMsg,
+							});
+						});
+					});
+
+					it("shows a success notification when create succeeds", async () => {
+						const { createGame, queryUserGame, notify } =
+							await renderGameWithGames();
+
+						const createGameButton = screen.getByRole("button", {
+							name: "Create Game",
+						});
+
+						await userEvent.click(createGameButton);
+
+						expect(createGame).toHaveBeenCalledExactlyOnceWith(createPayload);
+
+						await waitFor(() => {
+							expect(queryUserGame).toHaveBeenCalledTimes(2);
+							expect(notify).toHaveBeenCalledExactlyOnceWith({
+								type: "success",
+								msg: "Game Created!",
+							});
+						});
+					});
 				});
 			});
 		});
