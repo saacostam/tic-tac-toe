@@ -7,7 +7,7 @@ export enum DomainErrorType {
 
 export interface IFieldError {
   field: string;
-  messages: string[];
+  message: string;
 }
 
 /**

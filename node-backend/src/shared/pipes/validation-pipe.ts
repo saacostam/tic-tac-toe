@@ -6,10 +6,14 @@ export const validationPipe = new ValidationPipe({
   forbidNonWhitelisted: true,
   transform: true,
   exceptionFactory: (errors) => {
-    const fields: IFieldError[] = errors.map((err) => ({
-      field: err.property,
-      messages: Object.values(err.constraints ?? {}),
-    }));
+    const fields: IFieldError[] = errors.flatMap((err) => {
+      if (!err.constraints) return [];
+
+      return Object.values(err.constraints).map((message) => ({
+        field: err.property,
+        message,
+      }));
+    });
 
     return new BadRequestException({
       statusCode: 400,
