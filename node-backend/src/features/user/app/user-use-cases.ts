@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { USER_REPOSITORY, type IUserRepository } from '../domain';
+import { IUser, USER_REPOSITORY, type IUserRepository } from '../domain';
+import { BaseDomainError, DomainErrorType } from 'src/shared/errors/domain';
 
 @Injectable()
 export class UserUseCases {
@@ -10,5 +11,19 @@ export class UserUseCases {
 
   addUser(name: string) {
     return this.userRepo.createUser(name);
+  }
+
+  async getUser(userId: string): Promise<IUser | null> {
+    const user = await this.userRepo.getUserById(userId);
+
+    if (user === null) {
+      throw new BaseDomainError({
+        type: DomainErrorType.NOT_FOUND,
+        message: `[UserUseCases.getUser] Cannot find user with id ${userId}`,
+        userMessage: 'User not found',
+      });
+    }
+
+    return user;
   }
 }

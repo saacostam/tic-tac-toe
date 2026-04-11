@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserUseCases } from '../app';
-import { CreateUserRequest } from './dtos';
+import { CreateUserRequest, UserIdParam } from './dtos';
 
 @Controller('users')
 export class UserController {
@@ -9,5 +9,10 @@ export class UserController {
   @Post()
   create(@Body() req: CreateUserRequest) {
     return this.userUC.addUser(req.name);
+  }
+
+  @Get(':id')
+  getById(@Param() params: UserIdParam) {
+    return this.userUC.getUser(params.id);
   }
 }
