@@ -6,7 +6,7 @@ import type {
 	WithTurns,
 } from "../domain";
 
-const BASE_HTTP_URL = "http://localhost:8000";
+const BASE_HTTP_URL = "http://localhost:3000";
 
 export class GameClient implements IGameClient {
 	async createGame(args: IGameClientPayload["CreateGameReq"]): Promise<void> {
