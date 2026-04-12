@@ -141,7 +141,7 @@ export class GameClient implements IGameClient {
 	async queryUserGame(
 		args: IGameClientPayload["QueryUserGameReq"],
 	): Promise<WithTurns<IGame> | null> {
-		const url = new URL(`/${args.userId}/games`, BASE_HTTP_URL);
+		const url = new URL(`/games/user-id/${args.userId}`, BASE_HTTP_URL);
 		const resp = await fetch(url.toString());
 
 		if (!resp.ok) {
@@ -168,7 +168,8 @@ export class GameClient implements IGameClient {
 			return null;
 		}
 
-		const data: null | {
+		const { game: data }: {
+			game: null | {
 			ID: string;
 			Players: Array<string>;
 			Turns:
@@ -180,6 +181,7 @@ export class GameClient implements IGameClient {
 				  }[];
 			Status: 0 | 1;
 			WinnerPlayerId: string | null;
+		}
 		} = await resp.json();
 
 		if (data === null) return null;
