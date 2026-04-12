@@ -45,7 +45,7 @@ export class ConnectionClient implements IConnectionClient {
 			};
 
 			const onOpen = () => {
-				socket.send(JSON.stringify({ event: "CONNECT", message: args.name}))
+				socket.send(JSON.stringify({ event: "CONNECT", message: args.name }));
 
 				opened = true;
 				resolveOnce();

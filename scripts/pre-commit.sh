@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-echo "Running frontend checks..."
+echo "Running app checks..."
 
-cd frontend
+cd app
 
 bun check
 bun run build

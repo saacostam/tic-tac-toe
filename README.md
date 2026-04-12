@@ -25,32 +25,10 @@ Everything happens in real time — moves and game state updates are pushed inst
 
 ## What’s in This Repository
 
-This project has two main parts:
-
 - **Frontend**  
   The user interface you interact with in the browser.
 
-- **Backend**  
-  A small server that:
-  - Keeps track of users and games
-  - Validates moves
-  - Determines winners
-  - Sends real-time updates
-
 The frontend talks to the backend through HTTP requests and a persistent real-time connection.
-
----
-
-## Running Locally
-
-This project is designed to be run locally.
-
-1. Start the backend server
-2. Start the frontend
-3. Open the frontend in your browser
-4. Open a second tab (or browser) to play against yourself or a friend
-
-All data lives in memory, so restarting the backend resets everything.
 
 ---
 

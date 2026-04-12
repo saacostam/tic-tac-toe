@@ -168,20 +168,22 @@ export class GameClient implements IGameClient {
 			return null;
 		}
 
-		const { game: data }: {
+		const {
+			game: data,
+		}: {
 			game: null | {
-			ID: string;
-			Players: Array<string>;
-			Turns:
-				| null
-				| {
-						X: number;
-						Y: number;
-						PlayerId: string;
-				  }[];
-			Status: 0 | 1;
-			WinnerPlayerId: string | null;
-		}
+				ID: string;
+				Players: Array<string>;
+				Turns:
+					| null
+					| {
+							X: number;
+							Y: number;
+							PlayerId: string;
+					  }[];
+				Status: 0 | 1;
+				WinnerPlayerId: string | null;
+			};
 		} = await resp.json();
 
 		if (data === null) return null;
