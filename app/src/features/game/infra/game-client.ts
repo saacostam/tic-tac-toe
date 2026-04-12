@@ -6,7 +6,7 @@ import type {
 	WithTurns,
 } from "../domain";
 
-const BASE_HTTP_URL = "http://localhost:3000";
+const BASE_HTTP_URL = "http://localhost:3333/tic-tac-toe/";
 
 export class GameClient implements IGameClient {
 	async createGame(args: IGameClientPayload["CreateGameReq"]): Promise<void> {
@@ -91,7 +91,7 @@ export class GameClient implements IGameClient {
 	}
 
 	async queryGames(): Promise<IGame[]> {
-		const url = new URL("/games", BASE_HTTP_URL);
+		const url = new URL("games", BASE_HTTP_URL);
 
 		const res = await fetch(url.toString());
 
@@ -141,7 +141,7 @@ export class GameClient implements IGameClient {
 	async queryUserGame(
 		args: IGameClientPayload["QueryUserGameReq"],
 	): Promise<WithTurns<IGame> | null> {
-		const url = new URL(`/games/user-id/${args.userId}`, BASE_HTTP_URL);
+		const url = new URL(`games/userId/${args.userId}`, BASE_HTTP_URL);
 		const resp = await fetch(url.toString());
 
 		if (!resp.ok) {

@@ -14,10 +14,9 @@ export class ConnectionClient implements IConnectionClient {
 
 	join(args: IConnectionClientPayload["JoinIn"]): Promise<void> {
 		return new Promise((res, rej) => {
-			const queryParams = new URLSearchParams();
-			queryParams.set("name", args.name);
-
-			const socket = new WebSocket(`ws://localhost:3000/ws`);
+			const socket = new WebSocket(
+				`ws://localhost:3333/tic-tac-toe/ws/${args.name}`,
+			);
 			this.isCleanDisconnection = false;
 			this.socket = socket;
 
@@ -45,8 +44,6 @@ export class ConnectionClient implements IConnectionClient {
 			};
 
 			const onOpen = () => {
-				socket.send(JSON.stringify({ event: "CONNECT", message: args.name }));
-
 				opened = true;
 				resolveOnce();
 			};
