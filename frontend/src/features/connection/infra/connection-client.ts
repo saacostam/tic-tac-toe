@@ -17,7 +17,7 @@ export class ConnectionClient implements IConnectionClient {
 			const queryParams = new URLSearchParams();
 			queryParams.set("name", args.name);
 
-			const socket = new WebSocket(`ws://localhost:3000/ws?${queryParams.toString()}`);
+			const socket = new WebSocket(`ws://localhost:3000/ws`);
 			this.isCleanDisconnection = false;
 			this.socket = socket;
 
@@ -45,6 +45,8 @@ export class ConnectionClient implements IConnectionClient {
 			};
 
 			const onOpen = () => {
+				socket.send(JSON.stringify({ event: "CONNECT", message: args.name}))
+
 				opened = true;
 				resolveOnce();
 			};

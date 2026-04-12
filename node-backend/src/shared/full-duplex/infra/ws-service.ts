@@ -9,13 +9,14 @@ export class WsService {
     this.clients.set(userId, client);
   }
 
-  removeClient(client: WebSocket) {
+  removeClient(client: WebSocket): string | null {
     for (const [userId, storedClient] of this.clients.entries()) {
       if (storedClient === client) {
         this.clients.delete(userId);
-        break;
+        return userId;
       }
     }
+    return null;
   }
 
   sendToUser(userId: string, event: string, payload: any) {

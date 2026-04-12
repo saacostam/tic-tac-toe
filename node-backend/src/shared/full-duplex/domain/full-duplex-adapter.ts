@@ -1,3 +1,5 @@
+import WebSocket from 'ws';
+
 export enum IFullDuplexEventType {
   GamesChanged = 'GAMES_CHANGED',
   UserGameChanged = 'USER_GAME_CHANGED',
@@ -6,6 +8,8 @@ export enum IFullDuplexEventType {
 }
 
 export interface IFullDuplexAdapter {
+  addClient(userId: string, client: WebSocket): Promise<void>;
+
   broadcast(args: IFullDuplexAdapterPayload['BroadcastIn']): Promise<void>;
   publish(args: IFullDuplexAdapterPayload['PublishIn']): Promise<void>;
 }

@@ -2,45 +2,69 @@ import {
   WebSocketGateway,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { WsService } from './ws-service';
-import { IncomingMessage } from 'http';
-import WebSocket from 'ws';
+import WebSocket, { Server } from 'ws';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { IEvents } from 'src/shared/events/domain';
 
 @WebSocketGateway({
   path: '/ws',
 })
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly wsService: WsService) {}
+  constructor(
+    private readonly wsService: WsService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
-  handleConnection(client: WebSocket, request: IncomingMessage) {
-    const name = this.extractName(request);
+  @WebSocketServer()
+  server!: Server;
 
-    if (!name) {
-      client.close(1008, 'Missing userId');
-      return;
-    }
+  handleConnection(client: WebSocket) {
+    client.on('message', (raw) => {
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
+      const data = JSON.parse(raw.toString()) as unknown;
 
-    this.wsService.addClient(name, client);
+      const event = this.safeExtractField(data, 'event');
+      const message = this.safeExtractField(data, 'message');
 
-    client.send(
-      JSON.stringify({
-        event: 'USER_ID',
-        message: name,
-      }),
-    );
+      /**
+       * What we do if request is invalid
+       */
+      const notValid = () => {
+        client.close();
+      };
+
+      if (!event) return notValid();
+
+      switch (event) {
+        case 'CONNECT': {
+          if (!message) return notValid();
+
+          this.eventEmitter.emit(IEvents.Connected, {
+            name: message,
+            ws: client,
+          });
+        }
+      }
+    });
   }
 
-  handleDisconnect(client: WebSocket) {
-    this.wsService.removeClient(client);
+  async handleDisconnect(client: WebSocket) {
+    const userId = this.wsService.removeClient(client);
+
+    if (userId) {
+      this.eventEmitter.emit(IEvents.Disconnected, {
+        userId,
+      });
+    }
   }
 
-  private extractName(request: IncomingMessage): string | null {
-    try {
-      const url = new URL(request.url || '', 'http://localhost');
-      return url.searchParams.get('name');
-    } catch {
-      return null;
-    }
+  private safeExtractField(p: unknown, key: string): string | null {
+    if (typeof p !== 'object' || p === null) return null;
+    const value = (p as Record<string, unknown>)[key];
+    if (typeof value === 'string') return value;
+    return null;
   }
 }
