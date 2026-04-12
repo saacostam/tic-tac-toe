@@ -14,7 +14,10 @@ export class ConnectionClient implements IConnectionClient {
 
 	join(args: IConnectionClientPayload["JoinIn"]): Promise<void> {
 		return new Promise((res, rej) => {
-			const socket = new WebSocket(`ws://localhost:3000/ws/${args.name}`);
+			const queryParams = new URLSearchParams();
+			queryParams.set("name", args.name);
+
+			const socket = new WebSocket(`ws://localhost:3000/ws?${queryParams.toString()}`);
 			this.isCleanDisconnection = false;
 			this.socket = socket;
 
