@@ -36,7 +36,7 @@ export class GameClient implements IGameClient {
 
 	async endGame(args: IGameClientPayload["EndGameReq"]): Promise<void> {
 		const url = new URL(
-			`/${args.userId}/games/${args.gameId}/end`,
+			`games/${args.gameId}/userId/${args.userId}/end`,
 			BASE_HTTP_URL,
 		);
 
