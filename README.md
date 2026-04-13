@@ -1,56 +1,78 @@
-# Tic-Tac-Toe
+# Tic-Tac-Toe (Frontend)
 
-This is a simple **real-time Tic-Tac-Toe game** you can play in the browser.
+Frontend application for an **online multiplayer Tic-Tac-Toe game**, built as a **learning project** with a focus on real-time state, user flows, and error handling.
 
-It was built as a side project to explore real-time interactions, game state handling, and clean separation between frontend and backend logic.
-
-The game supports:
-- Creating and joining games
-- Playing turns in real time
-- Detecting wins and finished games
-- Handling player disconnects
+This repository contains **only the frontend**. The backend lives in a separate repository and is required for gameplay.
 
 ---
 
-## How It Works (High Level)
+## Overview
 
-- You open the app in the browser and choose a name
-- You can create a new game or join an existing one
-- Two players take turns placing their marks on a 3×3 board
-- The game ends when someone wins or the game is closed
+The app allows players to:
 
-Everything happens in real time — moves and game state updates are pushed instantly to both players.
+- Join a lobby
+- Wait for another player to connect
+- Play a real-time Tic-Tac-Toe match online
+- See whose turn it is
+- Receive clear error feedback when something goes wrong
 
----
-
-## What’s in This Repository
-
-- **Frontend**  
-  The user interface you interact with in the browser.
-
-The frontend talks to the backend through HTTP requests and a persistent real-time connection.
+There is **no local (offline) mode** — all games are played against another user through the backend.
 
 ---
 
-## Limitations
+## Key Features
 
-This is a **learning / side project**, so some things are intentionally simple:
-
-- No accounts or passwords
-- No persistence (games disappear on restart)
-- No matchmaking beyond joining open games
-
----
-
-## Why This Exists
-
-This project was built to:
-- Practice full-stack development
-- Experiment with real-time updates
-- Keep things small, understandable, and fun
+- Online multiplayer gameplay
+- Lobby-based flow
+- Turn indicator
+- Basic error states and user feedback
+- Clean, minimal UI focused on clarity
 
 ---
 
-## License
+## Non-Goals (for now)
 
-MIT
+The following are intentionally **out of scope** at the moment:
+
+- Local (same-device) multiplayer
+- Reconnection or session recovery
+- Spectators
+- Match history or persistence
+
+---
+
+## Project Status
+
+🚧 **Work in Progress**
+
+This project is actively evolving. Changes to the backend may require corresponding updates in this frontend, and vice versa.
+
+Current focus areas:
+- Solidifying the multiplayer flow
+- Improving robustness and error handling
+- Refining the overall game lifecycle
+
+---
+
+## Motivation
+
+This project exists primarily as a **learning exercise**, exploring:
+
+- Client–server coordination for multiplayer games
+- Managing async and real-time UI state
+- Designing clear user flows for multiplayer experiences
+
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+
+Note: This will impact Vite dev & build performances.

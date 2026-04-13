@@ -151,9 +151,7 @@ export class GameClient implements IGameClient {
 			return null;
 		}
 
-		const {
-			game,
-		} = await resp.json();
+		const { game } = await resp.json();
 
 		return game;
 	}
