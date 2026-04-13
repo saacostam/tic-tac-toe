@@ -10,7 +10,7 @@ const BASE_HTTP_URL = "http://localhost:3333/tic-tac-toe/";
 
 export class GameClient implements IGameClient {
 	async createGame(args: IGameClientPayload["CreateGameReq"]): Promise<void> {
-		const url = new URL(`/${args.userId}/games`, BASE_HTTP_URL);
+		const url = new URL(`games/userId/${args.userId}`, BASE_HTTP_URL);
 
 		const res = await fetch(url.toString(), { method: "POST" });
 
@@ -64,7 +64,7 @@ export class GameClient implements IGameClient {
 
 	async joinGame(args: IGameClientPayload["JoinGameReq"]): Promise<void> {
 		const url = new URL(
-			`/${args.userId}/games/${args.gameId}/join`,
+			`games/${args.gameId}/userId/${args.userId}/join`,
 			BASE_HTTP_URL,
 		);
 
@@ -118,24 +118,7 @@ export class GameClient implements IGameClient {
 			return [];
 		}
 
-		const data: null | Array<{
-			ID: string;
-			Players: string[];
-			Turns: [];
-			Status: 0 | 1;
-			WinnerPlayerId: string | null;
-		}> = await res.json();
-
-		if (data === null) {
-			return [];
-		}
-
-		return data.map((entry) => ({
-			id: entry.ID,
-			userIds: entry.Players,
-			status: entry.Status === 0 ? "started" : "finished",
-			winnerPlayerId: entry.WinnerPlayerId,
-		}));
+		return res.json();
 	}
 
 	async queryUserGame(
@@ -169,41 +152,15 @@ export class GameClient implements IGameClient {
 		}
 
 		const {
-			game: data,
-		}: {
-			game: null | {
-				ID: string;
-				Players: Array<string>;
-				Turns:
-					| null
-					| {
-							X: number;
-							Y: number;
-							PlayerId: string;
-					  }[];
-				Status: 0 | 1;
-				WinnerPlayerId: string | null;
-			};
+			game,
 		} = await resp.json();
 
-		if (data === null) return null;
-
-		return {
-			id: data.ID,
-			userIds: data.Players,
-			turns: (data.Turns || []).map((entry) => ({
-				playerId: entry.PlayerId,
-				y: entry.Y,
-				x: entry.X,
-			})),
-			status: data.Status === 0 ? "started" : "finished",
-			winnerPlayerId: data.WinnerPlayerId,
-		};
+		return game;
 	}
 
 	async sendTurn(args: IGameClientPayload["SendTurnReq"]): Promise<void> {
 		const url = new URL(
-			`/${args.userId}/games/${args.gameId}/turn`,
+			`games/${args.gameId}/userId/${args.userId}/turn`,
 			BASE_HTTP_URL,
 		);
 
