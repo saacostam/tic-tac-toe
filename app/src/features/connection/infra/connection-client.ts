@@ -15,7 +15,7 @@ export class ConnectionClient implements IConnectionClient {
 	join(args: IConnectionClientPayload["JoinIn"]): Promise<void> {
 		return new Promise((res, rej) => {
 			const socket = new WebSocket(
-				`ws://localhost:3333/tic-tac-toe/ws/${args.name}`,
+				`wss://saacostam-api.onrender.com/tic-tac-toe/ws/${args.name}`,
 			);
 			this.isCleanDisconnection = false;
 			this.socket = socket;

@@ -6,7 +6,7 @@ import type {
 	WithTurns,
 } from "../domain";
 
-const BASE_HTTP_URL = "http://localhost:3333/tic-tac-toe/";
+const BASE_HTTP_URL = "https://saacostam-api.onrender.com/tic-tac-toe/";
 
 export class GameClient implements IGameClient {
 	async createGame(args: IGameClientPayload["CreateGameReq"]): Promise<void> {
