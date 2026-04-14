@@ -1,1 +1,0 @@
-import{h as i,e as p,j as c,g as n}from"./index-DdvC3HR_.js";const h=i((e,o)=>{const{w:s,h:a,miw:r,mih:t,...m}=p("Space",null,e);return c.jsx(n,{ref:o,...m,w:s,miw:r??s,h:a,mih:t??a})});h.displayName="@mantine/core/Space";export{h as S};
