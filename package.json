@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "type-check": "tsc -b",
+		"build": "tsc -b && vite build",
     "lint": "bunx biome lint --write ./src",
     "format": "bunx biome format --write ./src",
     "check": "bunx biome check --write ./src",
     "test": "bunx vitest",
     "test:dry": "bunx vitest run",
     "preview": "vite preview",
-    "pre-commit": "bun check && bun run build && bun run test:dry",
+    "pre-commit": "bun run check && bun run type-check && bun run test:dry",
     "prepare": "husky"
   },
   "dependencies": {
