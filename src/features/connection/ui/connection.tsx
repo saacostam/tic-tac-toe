@@ -4,9 +4,12 @@ import {
 	Box,
 	Button,
 	Card,
+	Divider,
+	Flex,
 	Space,
 	Text,
 	TextInput,
+	ThemeIcon,
 } from "@mantine/core";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
@@ -16,6 +19,7 @@ import { useAdapters } from "@/shared/adapters/core/app";
 import { RouteName } from "@/shared/adapters/navigation/domain";
 import { QueryKeys } from "@/shared/async-state";
 import { useClients } from "@/shared/clients/app";
+import { InformationCircleIcon } from "@/shared/icons";
 import { FormUtils } from "@/shared/utils/form";
 import { useMutationJoin } from "../app";
 
@@ -187,6 +191,16 @@ export function Connection() {
 				<Button fullWidth loading={join.isPending} type="submit">
 					Join
 				</Button>
+				<Divider my="md" />
+				<Flex direction="row" gap="xs">
+					<ThemeIcon bdrs="100%" size="sm" variant="light" style={{ flex: 0 }}>
+						<InformationCircleIcon />
+					</ThemeIcon>
+					<Text c="dimmed" size="xs" style={{ flex: 1 }} miw="0">
+						This app doesn't have many users yet, so if you want to try it out,
+						you can just open two tabs in your browser.
+					</Text>
+				</Flex>
 			</form>
 		</Card>
 	);
